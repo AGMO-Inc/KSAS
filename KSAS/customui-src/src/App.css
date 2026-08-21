@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+/*
+ * Field name drawn on the KSAS satellite map. Rendered into a Google Maps
+ * overlay pane, so it sits outside the React tree and cannot use utility
+ * classes.
+ */
+.ksas-field-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-size: 32px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 0.55);
+}
+
+/* Touch lists scroll by drag; keep the bar present but out of the way. */
+.ksas-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #3c3f42 transparent;
+}
+
+.ksas-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ksas-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ksas-scroll::-webkit-scrollbar-thumb {
+  background: #3c3f42;
+  border-radius: 5px;
+}
