@@ -1,0 +1,36 @@
+
+#
+# AppMain.cmake
+# Copyright (c) Robert Bosch GmbH. All rights reserved.
+# Generator version: 8.6.0.202606260437
+#
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wdouble-promotion -fshort-enums")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -DDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG -s")
+set(CMAKE_CXX_FLAGS_MINSIZEREL     "${CMAKE_CXX_FLAGS_MINSIZEREL} -Os -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g")
+
+include(GNUInstallDirs)
+
+file(GLOB_RECURSE AppMain_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/web/*.cpp)
+file(GLOB_RECURSE AppMain_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/*.h ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/web/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/AppMain/web/*.h)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(${PROJECT_NAME} ${AppMain_HEADERS} ${AppMain_SOURCES})
+
+target_link_libraries(${PROJECT_NAME} FCAL::fcal-runtime)
+
+target_link_libraries(${PROJECT_NAME} KSAS::ksas-nevonex)
+
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if (WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND_EXPAND_LISTS)
+endif (WIN32)
+

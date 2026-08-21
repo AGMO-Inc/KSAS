@@ -1,0 +1,13 @@
+*.zip
+dependencies/
+install/
+build/
+*.gen.tests/
+*.gen.tests/bin/
+*.gen.tests/target/
+*.gen/
+*.gen/bin/
+*.gen/target/
+*_CPP_SDK/
+docs/
+sdkJavaDocJar/

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-20T23:54:55Z",
+  "scope": "project",
+  "ui": {
+    "defaultFramework": "react",
+    "activeSrcPath": "KSAS/customui-src",
+    "react": {
+      "templateRepo": "https://github.com/AGMO-Inc/custom-ui-react-template",
+      "templateRef": "master"
+    }
+  },
+  "marketplace": {
+    "endpoint": "dev",
+    "endpointUrl": "https://dev.marketplace-api.seamos.io/mcp"
+  }
+}

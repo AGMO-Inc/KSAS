@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AppMain" nsURI="com.bosch.nevonex.AppMain" nsPrefix="AppMain">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="isApp" value="true"/>
+    <details key="appVersion" value="8.6.0.202606260437"/>
+    <details key="appName" value="KSAS"/>
+    <details key="Provider" value=""/>
+    <details key="AppControllerName" value="KSAS"/>
+    <details key="hasUserControls" value="false"/>
+    <details key="UDInputListeners" value=""/>
+    <details key="Timer" value="1000"/>
+    <details key="isCustomUI" value="true"/>
+    <details key="PlatformServices" value="Cloud_Upload"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationMain">
+    <eOperations name="addProcessTimer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This method schedules the controller to be called in particular interval of time."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="addCustomUIListener"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationInputData"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IController" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="KSAS" eSuperTypes="#//ApplicationInputData #//IController">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="AppController" value="true"/>
+      <details key="AppControllerProviders" value=""/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureManagerListener">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IgnitionStateListener">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+  </eClassifiers>
+  <eSubpackages name="web">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="isApp" value="true"/>
+      <details key="AppControllerName" value="KSAS"/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="SampleRoute">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SampleRouteFactory">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WebSocketEndPoint">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="kSAS" eType="#//KSAS"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

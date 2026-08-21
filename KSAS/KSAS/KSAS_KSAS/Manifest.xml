@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Feature>
+    
+  <Identity>
+        
+    <Brand> </Brand>
+        
+    <LegalEntity> </LegalEntity>
+        
+    <Company> </Company>
+        
+    <ProjectID> </ProjectID>
+        
+    <Name>KSAS</Name>
+        
+    <FeatureType> </FeatureType>
+        
+    <FeatureDate> </FeatureDate>
+        
+    <FeatureID> </FeatureID>
+        
+    <License> </License>
+        
+    <Description> </Description>
+        
+    <Author> </Author>
+        
+    <Version>
+            
+      <Major>1</Major>
+            
+      <Minor>0</Minor>
+            
+      <Patch>0</Patch>
+          
+    </Version>
+      
+  </Identity>
+    
+  <UI>
+        
+    <Type>CustomUI</Type>
+        
+    <Port>1456</Port>
+        
+    <Context>#!/app</Context>
+        
+    <QRScanner>false</QRScanner>
+        
+    <AndroidAppID> </AndroidAppID>
+        
+    <IOSAppID> </IOSAppID>
+      
+  </UI>
+    
+  <Dependencies>
+        
+    <Interfaces/>
+        
+    <Libraries>
+            
+      <Library>
+                
+        <Name> </Name>
+                
+        <Version> </Version>
+              
+      </Library>
+          
+    </Libraries>
+        
+    <Development_Environment>
+            
+      <FCAL_Runtime_Version>8.4.18</FCAL_Runtime_Version>
+            
+      <FD_Version>8.4</FD_Version>
+            
+      <Development_Tools>
+                
+        <Development_Tool>
+                    
+          <Name> </Name>
+                    
+          <Version> </Version>
+                    
+          <TargetCompiler> </TargetCompiler>
+                  
+        </Development_Tool>
+              
+      </Development_Tools>
+          
+    </Development_Environment>
+        
+    <External_Libraries>
+            
+      <External_Library>
+                
+        <Name> </Name>
+                
+        <Version>
+                    
+          <Major> </Major>
+                    
+          <Minor> </Minor>
+                    
+          <Patch> </Patch>
+                  
+        </Version>
+              
+      </External_Library>
+          
+    </External_Libraries>
+      
+  </Dependencies>
+    
+  <ContainerCharacteristics>
+        
+    <Name> </Name>
+        
+    <ContainerType> </ContainerType>
+        
+    <BasePackage> </BasePackage>
+        
+    <EntryPoint> </EntryPoint>
+        
+    <ExitPoint> </ExitPoint>
+        
+    <AutoStart> </AutoStart>
+        
+    <DataUpload_Support> </DataUpload_Support>
+        
+    <ExternalCloud_API_Support> </ExternalCloud_API_Support>
+        
+    <FGF_Integration_Support> </FGF_Integration_Support>
+        
+    <Version>
+            
+      <Major> </Major>
+            
+      <Minor> </Minor>
+            
+      <Patch> </Patch>
+          
+    </Version>
+      
+  </ContainerCharacteristics>
+    
+  <MachineStatus>
+        
+    <MachineState/>
+        
+    <MachineStateError/>
+      
+  </MachineStatus>
+    
+  <Installation>
+        
+    <Method>Docker</Method>
+        
+    <AutoInstall>true</AutoInstall>
+        
+    <Properties>
+            
+      <HasToBeBuilt>true</HasToBeBuilt>
+            
+      <DockerFile>Dockerfolder</DockerFile>
+            
+      <AutoRun>false</AutoRun>
+            
+      <ImageName> </ImageName>
+            
+      <FileSystemIn>/app/in/</FileSystemIn>
+            
+      <FileSystemOut>/app/out/</FileSystemOut>
+            
+      <Mount> </Mount>
+          
+    </Properties>
+      
+  </Installation>
+    
+  <Resource>
+        
+    <Cpu> </Cpu>
+        
+    <Memory> </Memory>
+        
+    <Space> </Space>
+        
+    <FolderType>M</FolderType>
+      
+  </Resource>
+  
+</Feature>
