@@ -165,7 +165,7 @@
             
       <DockerFile>Dockerfolder</DockerFile>
             
-      <AutoRun>false</AutoRun>
+      <AutoRun>true</AutoRun>
             
       <ImageName> </ImageName>
             
