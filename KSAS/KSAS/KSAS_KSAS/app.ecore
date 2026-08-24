@@ -3,7 +3,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AppMain" nsURI="com.bosch.nevonex.AppMain" nsPrefix="AppMain">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="isApp" value="true"/>
-    <details key="appVersion" value="8.6.0.202606260437"/>
+    <details key="appVersion" value="8.6.0.202605110832"/>
     <details key="appName" value="KSAS"/>
     <details key="Provider" value=""/>
     <details key="AppControllerName" value="KSAS"/>
