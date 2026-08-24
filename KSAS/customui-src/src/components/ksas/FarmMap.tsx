@@ -24,13 +24,57 @@ const FIELD_MAP_FIT_PADDING: FitPadding = {
   left: 642,
 }
 
-/** Matches the 5 px / 20 % outline the design draws over the imagery. */
+/**
+ * The design draws a 5 px / 20 % outline at the zoom where the field block
+ * fills the map. `strokeWeight` is a screen-pixel width, so holding it constant
+ * makes the outline swallow the parcel as you zoom out — these paddies are
+ * narrow strips. Scale it with the zoom instead so the outline keeps a roughly
+ * constant width on the ground, clamped so it neither vanishes when far out nor
+ * exceeds the design when close in.
+ */
 const OUTLINE = {
   strokeWeight: 5,
   selectedStrokeWeight: 9,
+  minStrokeWeight: 0.8,
+  minSelectedStrokeWeight: 1.4,
+  /** Zoom the design's 5 px outline is drawn at. */
+  referenceZoom: 19,
   fillOpacity: 0.2,
   selectedFillOpacity: 0.34,
 } as const
+
+function strokeWeightsAt(zoom: number | undefined) {
+  const scale = 2 ** ((zoom ?? OUTLINE.referenceZoom) - OUTLINE.referenceZoom)
+
+  const clamp = (design: number, floor: number) =>
+    Math.min(design, Math.max(floor, design * scale))
+
+  return {
+    base: clamp(OUTLINE.strokeWeight, OUTLINE.minStrokeWeight),
+    selected: clamp(
+      OUTLINE.selectedStrokeWeight,
+      OUTLINE.minSelectedStrokeWeight,
+    ),
+  }
+}
+
+/** Restyles every outline for the current selection and zoom. */
+function applyOutlines(
+  polygons: ReadonlyMap<string, google.maps.Polygon>,
+  selectedFarmId: string | undefined,
+  zoom: number | undefined,
+) {
+  const weights = strokeWeightsAt(zoom)
+
+  for (const [farmId, polygon] of polygons) {
+    const selected = farmId === selectedFarmId
+    polygon.setOptions({
+      strokeWeight: selected ? weights.selected : weights.base,
+      fillOpacity: selected ? OUTLINE.selectedFillOpacity : OUTLINE.fillOpacity,
+      zIndex: selected ? 2 : 1,
+    })
+  }
+}
 
 function createLabelOverlay(
   maps: typeof google.maps,
@@ -89,6 +133,9 @@ export function FarmMap({
   // Held in a ref so re-renders never tear down and rebuild the map.
   const onSelectFarmRef = useRef(onSelectFarm)
   onSelectFarmRef.current = onSelectFarm
+  // Read by the zoom listener, which outlives any one selection.
+  const selectedFarmIdRef = useRef(selectedFarmId)
+  selectedFarmIdRef.current = selectedFarmId
 
   const interactive = onSelectFarm !== undefined
 
@@ -130,6 +177,13 @@ export function FarmMap({
     }
 
     polygonsRef.current = polygons
+
+    const restyle = () =>
+      applyOutlines(polygons, selectedFarmIdRef.current, map.getZoom())
+    map.addListener('zoom_changed', restyle)
+    // fitBounds settles asynchronously; pick up the zoom it lands on.
+    map.addListener('idle', restyle)
+
     map.fitBounds(boundsOf(maps, farms), fitPadding)
 
     return () => {
@@ -148,18 +202,11 @@ export function FarmMap({
   }, [farms, fitPadding, interactive, maps])
 
   useEffect(() => {
-    for (const [farmId, polygon] of polygonsRef.current) {
-      const selected = farmId === selectedFarmId
-      polygon.setOptions({
-        strokeWeight: selected
-          ? OUTLINE.selectedStrokeWeight
-          : OUTLINE.strokeWeight,
-        fillOpacity: selected
-          ? OUTLINE.selectedFillOpacity
-          : OUTLINE.fillOpacity,
-        zIndex: selected ? 2 : 1,
-      })
-    }
+    applyOutlines(
+      polygonsRef.current,
+      selectedFarmId,
+      mapRef.current?.getZoom(),
+    )
   }, [maps, selectedFarmId])
 
   useEffect(() => {
