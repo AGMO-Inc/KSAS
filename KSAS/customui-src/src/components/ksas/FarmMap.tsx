@@ -76,32 +76,101 @@ function applyOutlines(
   }
 }
 
-function createLabelOverlay(
+/** Gap between a field's southern tip and its label, and between labels. */
+const LABEL_GAP = 8
+
+/** Southernmost vertex — the label hangs below this point. */
+function southTip(
+  path: readonly google.maps.LatLngLiteral[],
+): google.maps.LatLngLiteral {
+  let lowest = path[0]!
+  for (const point of path) if (point.lat < lowest.lat) lowest = point
+  return lowest
+}
+
+/**
+ * Draws every field label in one overlay.
+ *
+ * The labels sit under their field rather than on it: these paddies are 20–34 m
+ * wide strips, so a label centred on one spills over its neighbours. Owning all
+ * of them together also lets `draw` de-collide — neighbouring fields can be
+ * 19 m apart, closer than the labels are tall, so anchoring alone is not enough.
+ * Overlapping labels are pushed straight down, which keeps each one under its
+ * own field.
+ */
+function createLabelLayer(
   maps: typeof google.maps,
-  position: google.maps.LatLngLiteral,
-  text: string,
+  farms: readonly Farm[],
 ): google.maps.OverlayView {
-  const element = document.createElement('div')
-  element.className = 'ksas-field-label'
-  element.textContent = text
+  const entries = farms.map((farm) => {
+    const element = document.createElement('div')
+    element.className = 'ksas-field-label'
+    element.textContent = farm.name
+    return { element, anchor: southTip(farm.path) }
+  })
 
   const overlay = new maps.OverlayView()
 
   overlay.onAdd = () => {
-    overlay.getPanes()?.floatPane.appendChild(element)
+    const pane = overlay.getPanes()?.floatPane
+    for (const entry of entries) pane?.appendChild(entry.element)
   }
 
   overlay.draw = () => {
-    const point = overlay
-      .getProjection()
-      ?.fromLatLngToDivPixel(new maps.LatLng(position))
-    if (!point) return
-    element.style.left = `${point.x}px`
-    element.style.top = `${point.y}px`
+    const projection = overlay.getProjection()
+    if (!projection) return
+
+    const points = entries.flatMap((entry) => {
+      const point = projection.fromLatLngToDivPixel(
+        new maps.LatLng(entry.anchor),
+      )
+      return point ? [{ entry, point }] : []
+    })
+
+    // Settle from the top down so a label is only ever pushed away from a
+    // neighbour that is already final.
+    points.sort((a, b) => a.point.y - b.point.y)
+
+    const placed: {
+      left: number
+      right: number
+      top: number
+      bottom: number
+    }[] = []
+
+    for (const { entry, point } of points) {
+      const width = entry.element.offsetWidth
+      const height = entry.element.offsetHeight
+      let top = point.y + LABEL_GAP
+
+      for (let attempt = 0; attempt <= placed.length; attempt += 1) {
+        const box = {
+          left: point.x - width / 2,
+          right: point.x + width / 2,
+          top,
+          bottom: top + height,
+        }
+        const hit = placed.find(
+          (other) =>
+            box.left < other.right &&
+            box.right > other.left &&
+            box.top < other.bottom &&
+            box.bottom > other.top,
+        )
+        if (!hit) {
+          placed.push(box)
+          break
+        }
+        top = hit.bottom + LABEL_GAP
+      }
+
+      entry.element.style.left = `${point.x}px`
+      entry.element.style.top = `${top}px`
+    }
   }
 
   overlay.onRemove = () => {
-    element.remove()
+    for (const entry of entries) entry.element.remove()
   }
 
   return overlay
@@ -170,11 +239,11 @@ export function FarmMap({
       })
       polygon.addListener('click', () => onSelectFarmRef.current?.(farm.id))
       polygons.set(farm.id, polygon)
-
-      const label = createLabelOverlay(maps, farm.labelAt, farm.name)
-      label.setMap(map)
-      overlays.push(label)
     }
+
+    const labelLayer = createLabelLayer(maps, farms)
+    labelLayer.setMap(map)
+    overlays.push(labelLayer)
 
     polygonsRef.current = polygons
 

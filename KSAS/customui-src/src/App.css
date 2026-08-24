@@ -7,7 +7,8 @@
  */
 .ksas-field-label {
   position: absolute;
-  transform: translate(-50%, -50%);
+  /* Anchored under the field, so the top edge sits at the given point. */
+  transform: translate(-50%, 0);
   pointer-events: none;
   font-size: 32px;
   font-weight: 600;

@@ -1,4 +1,4 @@
-import { centroidOf, type LatLng } from '@/lib/geo'
+import type { LatLng } from '@/lib/geo'
 
 export const FARM_COLORS = {
   green: '#04FF60',
@@ -21,8 +21,6 @@ export type Farm = {
   croppingPlan: { crop: string; status: string }
   /** Field outline, clockwise. */
   path: LatLng[]
-  /** Where the field's name is drawn on the map. */
-  labelAt: LatLng
 }
 
 /**
@@ -45,7 +43,7 @@ export type Farm = {
  * and lot numbers only — no ownership, no land use. Do not read `owner` as a
  * claim about who holds the real parcel.
  */
-type FarmSeed = Omit<Farm, 'area' | 'labelAt'>
+type FarmSeed = Omit<Farm, 'area'>
 
 const farmSeeds: FarmSeed[] = [
   {
@@ -219,7 +217,6 @@ function areaInAres(path: readonly LatLng[]): number {
 export const farms: Farm[] = farmSeeds.map((farm) => ({
   ...farm,
   area: `${areaInAres(farm.path).toFixed(2)} a`,
-  labelAt: centroidOf(farm.path),
 }))
 
 export const defaultFarmId = 'farm-1'
