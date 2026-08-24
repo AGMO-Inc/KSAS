@@ -64,10 +64,12 @@ export function LogsPage() {
       />
 
       <div className="flex min-h-0 flex-1 flex-col px-[48px] pt-[40px]">
-        <div className="flex h-[76px] shrink-0 items-center justify-between">
-          <div className="flex items-center gap-[16px]">
+        {/* Wraps to a second row rather than clipping: the design assumes a
+            1697 px cockpit and narrower ones must still reach every action. */}
+        <div className="flex min-h-[76px] shrink-0 flex-wrap items-center justify-between gap-x-[24px] gap-y-[16px]">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-[16px]">
             <DropdownButton value={logSortOptions[0]} width={365} />
-            <div className="flex h-[76px] w-[225px] items-center justify-between rounded-[20px] border border-[#848b90] px-[30px]">
+            <div className="flex h-[76px] w-[225px] shrink-0 items-center justify-between rounded-[20px] border border-[#848b90] px-[30px]">
               <span className="text-[30px] font-medium whitespace-nowrap text-[#dae1e9]">
                 Photo
               </span>
@@ -79,7 +81,7 @@ export function LogsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-[20px]">
+          <div className="flex h-[76px] shrink-0 items-center self-start gap-[20px]">
             <ToolbarButton variant="neutral">
               <FilterIcon className="size-[36px]" />
               Filter

@@ -83,13 +83,15 @@ export function PlantingPlanPage() {
       />
 
       <div className="flex min-h-0 flex-1 flex-col px-[48px] pt-[40px]">
-        <div className="flex h-[76px] shrink-0 items-center justify-between">
-          <div className="flex items-center gap-[16px]">
+        {/* Wraps to a second row rather than clipping: the design assumes a
+            1697 px cockpit and narrower ones must still reach every action. */}
+        <div className="flex min-h-[76px] shrink-0 flex-wrap items-center justify-between gap-x-[24px] gap-y-[16px]">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-[16px]">
             <DropdownButton value={plantingPlanStatuses[0]} />
             <DropdownButton value={plantingPlanYears[0]} />
           </div>
 
-          <div className="flex items-center gap-[30px]">
+          <div className="flex h-[76px] shrink-0 items-center self-start gap-[30px]">
             <ListSummary count={visiblePlans.length} totalAres={totalAres} />
             <ToolbarButton>+Add</ToolbarButton>
           </div>

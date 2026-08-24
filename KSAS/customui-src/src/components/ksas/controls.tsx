@@ -40,15 +40,23 @@ export function DropdownButton({
   return (
     <button
       type="button"
-      style={width ? { width } : undefined}
-      className={`flex h-[76px] cursor-pointer items-center gap-[12px] rounded-[20px] border border-[#848b90] px-[30px] ${
+      // `width` is the design width, not a floor: the toolbar has to survive a
+      // cockpit narrower than the 1697 px the design assumes, and the dropdowns
+      // are what should give way first. The floor keeps the label readable —
+      // shrinking past it turns "Field Color" and "Field Block" into the same
+      // "Field ...", which is worse than letting the toolbar wrap.
+      style={width ? { flexBasis: width, minWidth: 260 } : undefined}
+      className={`flex h-[76px] shrink cursor-pointer items-center gap-[12px] rounded-[20px] border border-[#848b90] px-[30px] ${
         width ? 'justify-between' : ''
       }`}
     >
-      <span className="text-[30px] font-medium whitespace-nowrap text-[#dae1e9]">
+      <span className="truncate text-[30px] font-medium text-[#dae1e9]">
         {value}
       </span>
-      <ChevronIcon direction="down" className="size-[27px] text-[#e3e3e3]" />
+      <ChevronIcon
+        direction="down"
+        className="size-[27px] shrink-0 text-[#e3e3e3]"
+      />
     </button>
   )
 }
