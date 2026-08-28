@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react'
 
 const CALLBACK_NAME = '__ksasGoogleMapsReady'
+const SCRIPT_ID = 'ksas-google-maps'
+
+/**
+ * Give up on the script this long after injecting it.
+ *
+ * A machine whose Wi-Fi is up but whose uplink is dead swallows the request
+ * instead of refusing it, so `onerror` only fires once the OS has exhausted its
+ * TCP retries. Until then the map is an unexplained black rectangle, so cap the
+ * wait ourselves.
+ */
+const LOAD_TIMEOUT_MS = 10_000
 
 type MapsGlobals = typeof globalThis & {
   google?: { maps?: typeof google.maps }
@@ -14,7 +25,8 @@ let pending: Promise<typeof google.maps> | null = null
 
 /**
  * Injects the Google Maps JavaScript API once per page and resolves with the
- * `google.maps` namespace. Repeat calls share the same in-flight request.
+ * `google.maps` namespace. Repeat calls share the same in-flight request; a
+ * failed one is discarded so the next call starts over.
  */
 export function loadGoogleMaps(apiKey: string): Promise<typeof google.maps> {
   const loaded = globals.google?.maps
@@ -22,15 +34,35 @@ export function loadGoogleMaps(apiKey: string): Promise<typeof google.maps> {
   if (pending) return pending
 
   pending = new Promise<typeof google.maps>((resolve, reject) => {
+    let settled = false
+
     const fail = (message: string) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      delete globals[CALLBACK_NAME]
+      // Let the next attempt start from scratch rather than replay this failure.
       pending = null
+      document.getElementById(SCRIPT_ID)?.remove()
       reject(new Error(message))
     }
 
+    const timer = setTimeout(
+      () => fail('Timed out reaching maps.googleapis.com.'),
+      LOAD_TIMEOUT_MS,
+    )
+
     globals[CALLBACK_NAME] = () => {
+      if (settled) return
       const maps = globals.google?.maps
-      if (maps) resolve(maps)
-      else fail('Google Maps loaded without a `google.maps` namespace.')
+      if (!maps) {
+        fail('Google Maps loaded without a `google.maps` namespace.')
+        return
+      }
+      settled = true
+      clearTimeout(timer)
+      delete globals[CALLBACK_NAME]
+      resolve(maps)
     }
 
     // Google reports a rejected/misconfigured key here rather than via `onerror`.
@@ -47,6 +79,7 @@ export function loadGoogleMaps(apiKey: string): Promise<typeof google.maps> {
     })
 
     const script = document.createElement('script')
+    script.id = SCRIPT_ID
     script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`
     script.async = true
     script.onerror = () =>
@@ -54,6 +87,7 @@ export function loadGoogleMaps(apiKey: string): Promise<typeof google.maps> {
         'Could not reach maps.googleapis.com. The Google Maps JavaScript API needs outbound internet access.',
       )
 
+    document.getElementById(SCRIPT_ID)?.remove()
     document.head.appendChild(script)
   })
 
