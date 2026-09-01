@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useInternetReachable } from '@/lib/networkStatus'
 
 const CALLBACK_NAME = '__ksasGoogleMapsReady'
 const SCRIPT_ID = 'ksas-google-maps'
@@ -8,8 +9,8 @@ const SCRIPT_ID = 'ksas-google-maps'
  *
  * A machine whose Wi-Fi is up but whose uplink is dead swallows the request
  * instead of refusing it, so `onerror` only fires once the OS has exhausted its
- * TCP retries. Until then the map is an unexplained black rectangle, so cap the
- * wait ourselves.
+ * TCP retries. `useGoogleMaps` spots that machine before it ever gets here once
+ * the host has reported in; this covers the load that starts before it does.
  */
 const LOAD_TIMEOUT_MS = 10_000
 
@@ -107,27 +108,19 @@ export type GoogleMapsState = LoadState & {
 /**
  * Loads the Maps API from `VITE_GOOGLE_MAPS_API_KEY`.
  *
- * The connection is watched alongside the load. A machine that boots offline
- * says so at once instead of sitting out the load timeout first, and one that
- * loses its uplink mid-session is reported too — `google.maps` keeps working
- * there, but the tiles behind it stop arriving. Coming back online retries.
+ * Reachability is watched alongside the load, and it decides the outcome first:
+ * a machine that already knows it cannot reach the internet says so on the spot
+ * rather than injecting a script that will hang for the full load timeout. One
+ * that loses its uplink mid-session is reported too — `google.maps` keeps
+ * working there, but the tiles behind it stop arriving. Regaining the uplink
+ * retries the load.
  */
 export function useGoogleMaps(): GoogleMapsState {
-  const [offline, setOffline] = useState(() => !navigator.onLine)
+  const offline = !useInternetReachable()
   const [state, setState] = useState<LoadState>({
     maps: globals.google?.maps ?? null,
     error: null,
   })
-
-  useEffect(() => {
-    const sync = () => setOffline(!navigator.onLine)
-    window.addEventListener('online', sync)
-    window.addEventListener('offline', sync)
-    return () => {
-      window.removeEventListener('online', sync)
-      window.removeEventListener('offline', sync)
-    }
-  }, [])
 
   useEffect(() => {
     // Nothing to attempt without a network; the effect re-runs once it is back.
