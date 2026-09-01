@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import {
   AccountCircleIcon,
@@ -78,8 +78,36 @@ type SidebarDrawerProps = {
   onClose: () => void
 }
 
+/**
+ * How long the drawer takes to slide in or out.
+ *
+ * Held here rather than in a utility class because the closing drawer has to
+ * stay mounted for exactly as long as it is still moving, and a duration split
+ * across a class and a timer drifts apart the moment one of them is edited.
+ */
+const SLIDE_MS = 280
+
 export function SidebarDrawer({ open, onClose }: SidebarDrawerProps) {
   const { location } = useRouterState()
+
+  // `mounted` outlives `open` by one slide so the exit has something to animate.
+  const [mounted, setMounted] = useState(open)
+  // Drives the transition itself, a frame behind `mounted` on the way in.
+  const [shown, setShown] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      // Paint once off-screen first; a node that mounts already open has no
+      // start position to travel from and would appear in place.
+      const frame = requestAnimationFrame(() => setShown(true))
+      return () => cancelAnimationFrame(frame)
+    }
+
+    setShown(false)
+    const timer = setTimeout(() => setMounted(false), SLIDE_MS)
+    return () => clearTimeout(timer)
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -90,7 +118,7 @@ export function SidebarDrawer({ open, onClose }: SidebarDrawerProps) {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [onClose, open])
 
-  if (!open) return null
+  if (!mounted) return null
 
   return (
     <div className="absolute inset-0 z-10 leading-[normal]">
@@ -98,10 +126,18 @@ export function SidebarDrawer({ open, onClose }: SidebarDrawerProps) {
         type="button"
         aria-label="Close menu"
         onClick={onClose}
-        className="absolute inset-0 cursor-default bg-black/40"
+        className={`absolute inset-0 cursor-default bg-black/40 transition-opacity ease-out motion-reduce:transition-none ${
+          shown ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{ transitionDuration: `${SLIDE_MS}ms` }}
       />
 
-      <nav className="absolute inset-y-0 left-0 flex w-[606px] flex-col justify-between overflow-hidden border-r border-[#495156] bg-[#202223] px-[37px] py-[40px] shadow-[4px_4px_4px_0px_rgba(0,0,0,0.25)]">
+      <nav
+        className={`absolute inset-y-0 left-0 flex w-[606px] flex-col justify-between overflow-hidden border-r border-[#495156] bg-[#202223] px-[37px] py-[40px] shadow-[4px_4px_4px_0px_rgba(0,0,0,0.25)] transition-transform ease-out motion-reduce:transition-none ${
+          shown ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{ transitionDuration: `${SLIDE_MS}ms` }}
+      >
         <div className="flex items-center justify-between">
           <div className="relative h-[49px] w-[190px] overflow-hidden">
             <img
