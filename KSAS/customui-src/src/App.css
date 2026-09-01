@@ -1,6 +1,25 @@
 @import 'tailwindcss';
 
 /*
+ * The KSAS screens are one fixed 1697 x 1080 cockpit composition — the Figma
+ * frame every size in `components/ksas` and `pages/ksas` comes from — rather
+ * than a document that reflows, so they scale as a whole: sizes are written in
+ * `rem` at one rem per 16 design pixels (`h-[7.5rem]` is the design's 120 px)
+ * and the root font size carries the scale. Whichever axis is tighter wins, so
+ * the composition keeps its proportions on a screen that is not 1697 x 1080
+ * instead of clipping. Above 1697 x 1080 it grows, which is what a cockpit
+ * display wants; the map and the scrolling lists still take the real estate in
+ * actual pixels, so a bigger screen also shows more map and more rows.
+ *
+ * Scoped to the KSAS routes (RootLayout puts the class on <html> while one is
+ * mounted): the template pages are ordinary web pages and want the browser's
+ * own root size.
+ */
+html.ksas-scaled {
+  font-size: min(100vw / 1697 * 16, 100vh / 1080 * 16);
+}
+
+/*
  * Field name drawn on the KSAS satellite map. Rendered into a Google Maps
  * overlay pane, so it sits outside the React tree and cannot use utility
  * classes.
@@ -10,7 +29,7 @@
   /* Anchored under the field, so the top edge sits at the given point. */
   transform: translate(-50%, 0);
   pointer-events: none;
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 600;
   color: #ffffff;
   white-space: nowrap;

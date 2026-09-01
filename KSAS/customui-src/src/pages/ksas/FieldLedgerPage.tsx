@@ -25,25 +25,25 @@ function LedgerRow({ field }: { field: LedgerField }) {
   return (
     <button
       type="button"
-      className="flex w-full cursor-pointer items-center gap-[20px] rounded-[16px] border border-[#333338] bg-[#292a2b] py-[25px] pr-[24px] pl-[26px] text-left"
+      className="flex w-full cursor-pointer items-center gap-[1.25rem] rounded-[1rem] border border-[#333338] bg-[#292a2b] py-[1.5625rem] pr-[1.5rem] pl-[1.625rem] text-left"
     >
       <span
-        className="size-[22px] shrink-0 rounded-[5px]"
+        className="size-[1.375rem] shrink-0 rounded-[0.3125rem]"
         style={{ backgroundColor: field.color }}
       />
-      <span className="flex min-w-0 flex-1 flex-col gap-[8px]">
-        <span className="truncate text-[36px] font-bold text-[#f2f5f7]">
+      <span className="flex min-w-0 flex-1 flex-col gap-[0.5rem]">
+        <span className="truncate text-[2.25rem] font-bold text-[#f2f5f7]">
           {field.name}
         </span>
-        <span className="flex gap-[16px] text-[28px] whitespace-nowrap text-[#9ea8b2]">
+        <span className="flex gap-[1rem] text-[1.75rem] whitespace-nowrap text-[#9ea8b2]">
           <span>{field.block}</span>
           <span className="truncate">
             {field.number} · {field.address}
           </span>
         </span>
-        <span className="text-[28px] text-[#9ea8b2]">{field.areaAres}a</span>
+        <span className="text-[1.75rem] text-[#9ea8b2]">{field.areaAres}a</span>
       </span>
-      <ChevronIcon className="size-[53px] shrink-0 text-[#e3e3e3]" />
+      <ChevronIcon className="size-[3.3125rem] shrink-0 text-[#e3e3e3]" />
     </button>
   )
 }
@@ -68,22 +68,22 @@ export function FieldLedgerPage() {
         onBack={() => void navigate({ to: '/ksas', search: {} })}
       />
 
-      <div className="flex min-h-0 flex-1 flex-col px-[48px] pt-[40px] pb-[40px]">
+      <div className="flex min-h-0 flex-1 flex-col px-[3rem] pt-[2.5rem] pb-[2.5rem]">
         {/* Wraps to a second row rather than clipping: the design assumes a
             1697 px cockpit and narrower ones must still reach every action. */}
-        <div className="flex min-h-[76px] shrink-0 flex-wrap items-center justify-between gap-x-[24px] gap-y-[16px]">
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-[16px]">
+        <div className="flex min-h-[4.75rem] shrink-0 flex-wrap items-center justify-between gap-x-[1.5rem] gap-y-[1rem]">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-[1rem]">
             <DropdownButton value="Field Color" width={300} />
             <DropdownButton value="Field Block" width={300} />
             <DropdownButton value={fieldLedgerSortOptions[0]} width={300} />
           </div>
-          <div className="flex h-[76px] shrink-0 items-center self-start gap-[30px]">
+          <div className="flex h-[4.75rem] shrink-0 items-center self-start gap-[1.875rem]">
             <ListSummary count={visibleFields.length} totalAres={totalAres} />
             <ToolbarButton>+Add Field</ToolbarButton>
           </div>
         </div>
 
-        <div className="mt-[32px] flex h-[66px] shrink-0 items-center gap-[16px]">
+        <div className="mt-[2rem] flex h-[4.125rem] shrink-0 items-center gap-[1rem]">
           {fieldBlocks.map((name) => (
             <FilterChip
               key={name}
@@ -94,14 +94,14 @@ export function FieldLedgerPage() {
           ))}
         </div>
 
-        <div className="mt-[32px] flex min-h-0 flex-1 gap-[32px]">
-          <div className="ksas-scroll min-h-0 w-[902px] shrink-0 overflow-y-auto">
+        <div className="mt-[2rem] flex min-h-0 flex-1 gap-[2rem]">
+          <div className="ksas-scroll min-h-0 w-[56.375rem] shrink-0 overflow-y-auto">
             {visibleFields.length === 0 ? (
-              <p className="pt-[40px] text-[34px] text-[#9ea8b2]">
+              <p className="pt-[2.5rem] text-[2.125rem] text-[#9ea8b2]">
                 No fields in this block.
               </p>
             ) : (
-              <ul className="flex flex-col gap-[14px]">
+              <ul className="flex flex-col gap-[0.875rem]">
                 {visibleFields.map((field) => (
                   <li key={field.id}>
                     <LedgerRow field={field} />
@@ -111,7 +111,7 @@ export function FieldLedgerPage() {
             )}
           </div>
 
-          <div className="relative min-w-0 flex-1 overflow-hidden rounded-[20px]">
+          <div className="relative min-w-0 flex-1 overflow-hidden rounded-[1.25rem]">
             <FarmMap
               farms={farms}
               fitToken={0}

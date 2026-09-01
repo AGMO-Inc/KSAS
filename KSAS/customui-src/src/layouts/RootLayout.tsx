@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Outlet, Link, useRouterState } from '@tanstack/react-router'
 
 const navLinks = [
@@ -20,6 +21,16 @@ export function RootLayout() {
       location.pathname === prefix ||
       location.pathname.startsWith(`${prefix}/`),
   )
+
+  // The KSAS screens scale off the root font size (see `html.ksas-scaled` in
+  // `App.css`), which only <html> can carry — hence a class rather than a
+  // wrapper. It goes on for those routes alone so the template pages keep the
+  // browser's own text size.
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('ksas-scaled', fullScreen)
+    return () => root.classList.remove('ksas-scaled')
+  }, [fullScreen])
 
   if (fullScreen) {
     return <Outlet />

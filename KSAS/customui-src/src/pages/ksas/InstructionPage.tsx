@@ -13,20 +13,20 @@ function FormRow({ field }: { field: InstructionField }) {
   return (
     <button
       type="button"
-      className="flex h-[130px] w-full cursor-pointer items-center justify-between gap-[20px] rounded-[14px] border border-[#3d3d42] bg-[#292a2b] pr-[24px] pl-[26px]"
+      className="flex h-[8.125rem] w-full cursor-pointer items-center justify-between gap-[1.25rem] rounded-[0.875rem] border border-[#3d3d42] bg-[#292a2b] pr-[1.5rem] pl-[1.625rem]"
     >
-      <span className="text-[36px] font-semibold whitespace-nowrap text-white">
+      <span className="text-[2.25rem] font-semibold whitespace-nowrap text-white">
         {field.label}
       </span>
-      <span className="flex min-w-0 items-center gap-[14px]">
+      <span className="flex min-w-0 items-center gap-[0.875rem]">
         <span
-          className={`truncate text-[32px] font-medium ${
+          className={`truncate text-[2rem] font-medium ${
             field.unset ? 'text-[#9ea8b2]' : 'text-[#f2f5f7]'
           }`}
         >
           {field.value}
         </span>
-        <ChevronIcon className="size-[48px] shrink-0 text-[#e3e3e3]" />
+        <ChevronIcon className="size-[3rem] shrink-0 text-[#e3e3e3]" />
       </span>
     </button>
   )
@@ -43,12 +43,12 @@ export function InstructionPage() {
         onBack={() => void navigate({ to: '/ksas/logs' })}
       />
 
-      <div className="flex min-h-0 flex-1 px-[48px] py-[40px]">
+      <div className="flex min-h-0 flex-1 px-[3rem] py-[2.5rem]">
         <form
           onSubmit={(event) => event.preventDefault()}
-          className="ksas-scroll flex min-h-0 w-full flex-col overflow-y-auto rounded-[20px] border border-[#333338] bg-[#1c1c1c] px-[40px] py-[36px]"
+          className="ksas-scroll flex min-h-0 w-full flex-col overflow-y-auto rounded-[1.25rem] border border-[#333338] bg-[#1c1c1c] px-[2.5rem] py-[2.25rem]"
         >
-          <div className="flex w-fit shrink-0 items-center rounded-[14px] border border-[#3d3d42] bg-[#262629]">
+          <div className="flex w-fit shrink-0 items-center rounded-[0.875rem] border border-[#3d3d42] bg-[#262629]">
             {instructionModes.map((name) => {
               const active = name === mode
               return (
@@ -57,7 +57,7 @@ export function InstructionPage() {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setMode(name)}
-                  className={`cursor-pointer rounded-[14px] px-[44px] py-[16px] text-[34px] font-semibold whitespace-nowrap ${
+                  className={`cursor-pointer rounded-[0.875rem] px-[2.75rem] py-[1rem] text-[2.125rem] font-semibold whitespace-nowrap ${
                     active ? 'bg-[#2ce06b] text-[#0d170f]' : 'text-[#9ea8b2]'
                   }`}
                 >
@@ -67,12 +67,12 @@ export function InstructionPage() {
             })}
           </div>
 
-          <div className="mt-[26px] flex shrink-0 gap-[24px]">
+          <div className="mt-[1.625rem] flex shrink-0 gap-[1.5rem]">
             {[instructionForm.left, instructionForm.right].map(
               (column, index) => (
                 <div
                   key={index === 0 ? 'left' : 'right'}
-                  className="flex min-w-0 flex-1 flex-col gap-[16px]"
+                  className="flex min-w-0 flex-1 flex-col gap-[1rem]"
                 >
                   {column.map((field) => (
                     <FormRow key={field.label} field={field} />
@@ -84,7 +84,7 @@ export function InstructionPage() {
 
           <button
             type="submit"
-            className="mt-[26px] shrink-0 cursor-pointer rounded-[18px] bg-[#2ce06b] py-[28px] text-[34px] font-bold text-[#0d170f]"
+            className="mt-[1.625rem] shrink-0 cursor-pointer rounded-[1.125rem] bg-[#2ce06b] py-[1.75rem] text-[2.125rem] font-bold text-[#0d170f]"
           >
             Register
           </button>

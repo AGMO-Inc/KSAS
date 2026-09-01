@@ -40,11 +40,11 @@ export function FieldMapPage() {
           fitToken={fitToken}
         />
 
-        <div className="absolute top-[40px] bottom-[40px] left-[40px] w-[562px]">
+        <div className="absolute top-[2.5rem] bottom-[2.5rem] left-[2.5rem] w-[35.125rem]">
           <FarmInfoCard farm={selectedFarm} />
         </div>
 
-        <div className="absolute top-[40px] right-[40px] bottom-[40px] w-[120px]">
+        <div className="absolute top-[2.5rem] right-[2.5rem] bottom-[2.5rem] w-[7.5rem]">
           <MapToolbar onToolPress={handleToolPress} />
         </div>
       </div>

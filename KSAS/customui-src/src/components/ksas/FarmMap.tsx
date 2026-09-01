@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { Farm } from '@/data/farms'
 import { useGoogleMaps } from '@/lib/googleMaps'
+import { designPx, designPxToScreen } from '@/lib/scale'
 
 type FitPadding = { top: number; right: number; bottom: number; left: number }
 
@@ -16,13 +17,25 @@ type FarmMapProps = {
   fitPadding?: FitPadding
 }
 
-/** Keeps the field block clear of the info card (left) and the tool rail (right). */
+/**
+ * Keeps the field block clear of the info card (left) and the tool rail (right).
+ * Design pixels, like every other size on these screens — the overlays it is
+ * dodging scale with the viewport, so the gap it leaves has to as well.
+ */
 const FIELD_MAP_FIT_PADDING: FitPadding = {
   top: 80,
   right: 200,
   bottom: 80,
   left: 642,
 }
+
+/** `fitBounds` takes screen pixels, so the design figures are converted late. */
+const screenPadding = (padding: FitPadding): FitPadding => ({
+  top: designPxToScreen(padding.top),
+  right: designPxToScreen(padding.right),
+  bottom: designPxToScreen(padding.bottom),
+  left: designPxToScreen(padding.left),
+})
 
 /**
  * The design draws a 5 px / 20 % outline at the zoom where the field block
@@ -267,7 +280,7 @@ export function FarmMap({
     // fitBounds settles asynchronously; pick up the zoom it lands on.
     map.addListener('idle', restyle)
 
-    map.fitBounds(boundsOf(maps, farms), fitPadding)
+    map.fitBounds(boundsOf(maps, farms), screenPadding(fitPadding))
 
     return () => {
       for (const polygon of polygons.values()) {
@@ -294,7 +307,7 @@ export function FarmMap({
 
   useEffect(() => {
     if (!maps || !mapRef.current || fitToken === 0) return
-    mapRef.current.fitBounds(boundsOf(maps, farms), fitPadding)
+    mapRef.current.fitBounds(boundsOf(maps, farms), screenPadding(fitPadding))
   }, [farms, fitPadding, fitToken, maps])
 
   return (
@@ -305,18 +318,18 @@ export function FarmMap({
       />
       {unavailable && (
         <div
-          className="absolute inset-0 flex items-center justify-center py-[80px]"
+          className="absolute inset-0 flex items-center justify-center py-[5rem]"
           // Stay inside the strip of map the card and the tool rail leave free.
           style={{
-            paddingLeft: fitPadding.left,
-            paddingRight: fitPadding.right,
+            paddingLeft: designPx(fitPadding.left),
+            paddingRight: designPx(fitPadding.right),
           }}
         >
-          <div className="max-w-[720px] rounded-[28px] border border-[#333] bg-[#1c1c1c] p-[38px] text-center">
-            <p className="text-[32px] font-semibold text-[#f2f5f7]">
+          <div className="max-w-[45rem] rounded-[1.75rem] border border-[#333] bg-[#1c1c1c] p-[2.375rem] text-center">
+            <p className="text-[2rem] font-semibold text-[#f2f5f7]">
               {offline ? 'No internet connection' : 'Satellite map unavailable'}
             </p>
-            <p className="mt-[16px] text-[24px] leading-relaxed break-words text-[#99a1ab]">
+            <p className="mt-[1rem] text-[1.5rem] leading-relaxed break-words text-[#99a1ab]">
               {offline
                 ? 'This machine is not reaching the internet, so satellite imagery cannot load.'
                 : error}

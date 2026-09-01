@@ -13,12 +13,12 @@ type MapToolbarProps = {
 }
 
 const buttonClass =
-  'flex size-[120px] cursor-pointer items-center justify-center rounded-[30px]'
+  'flex size-[7.5rem] cursor-pointer items-center justify-center rounded-[1.875rem]'
 
 export function MapToolbar({ onToolPress }: MapToolbarProps) {
   return (
     <div className="flex h-full flex-col justify-between">
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[0.75rem]">
         {tools.map(({ id, label, icon }) => (
           <button
             key={id}
@@ -30,7 +30,7 @@ export function MapToolbar({ onToolPress }: MapToolbarProps) {
             <img
               src={`./assets/icons/${icon}.svg`}
               alt=""
-              className="size-[60px]"
+              className="size-[3.75rem]"
             />
           </button>
         ))}
@@ -45,7 +45,7 @@ export function MapToolbar({ onToolPress }: MapToolbarProps) {
         <img
           src="./assets/icons/description.svg"
           alt=""
-          className="size-[60px]"
+          className="size-[3.75rem]"
         />
       </button>
     </div>

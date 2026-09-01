@@ -42,12 +42,12 @@ const secondaryNav: NavEntry[] = [
 
 function NavRow({ label, Icon, active }: NavEntry & { active: boolean }) {
   return (
-    <span className="flex items-center gap-[16px]">
+    <span className="flex items-center gap-[1rem]">
       <Icon
-        className={`size-[60px] shrink-0 ${active ? 'text-[#04ff60]' : 'text-[#939da9]'}`}
+        className={`size-[3.75rem] shrink-0 ${active ? 'text-[#04ff60]' : 'text-[#939da9]'}`}
       />
       <span
-        className={`text-[40px] font-medium whitespace-nowrap ${active ? 'text-[#04ff60]' : 'text-[#c8ced5]'}`}
+        className={`text-[2.5rem] font-medium whitespace-nowrap ${active ? 'text-[#04ff60]' : 'text-[#c8ced5]'}`}
       >
         {label}
       </span>
@@ -133,13 +133,13 @@ export function SidebarDrawer({ open, onClose }: SidebarDrawerProps) {
       />
 
       <nav
-        className={`absolute inset-y-0 left-0 flex w-[606px] flex-col justify-between overflow-hidden border-r border-[#495156] bg-[#202223] px-[37px] py-[40px] shadow-[4px_4px_4px_0px_rgba(0,0,0,0.25)] transition-transform ease-out motion-reduce:transition-none ${
+        className={`absolute inset-y-0 left-0 flex w-[37.875rem] flex-col justify-between overflow-hidden border-r border-[#495156] bg-[#202223] px-[2.3125rem] py-[2.5rem] shadow-[4px_4px_4px_0px_rgba(0,0,0,0.25)] transition-transform ease-out motion-reduce:transition-none ${
           shown ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ transitionDuration: `${SLIDE_MS}ms` }}
       >
         <div className="flex items-center justify-between">
-          <div className="relative h-[49px] w-[190px] overflow-hidden">
+          <div className="relative h-[3.0625rem] w-[11.875rem] overflow-hidden">
             <img
               src="./assets/logo/ksas-logo-nega.png"
               alt="KSAS"
@@ -154,7 +154,7 @@ export function SidebarDrawer({ open, onClose }: SidebarDrawerProps) {
           >
             <ChevronIcon
               direction="left"
-              className="size-[40px] text-[#e3e3e3]"
+              className="size-[2.5rem] text-[#e3e3e3]"
             />
           </button>
         </div>
