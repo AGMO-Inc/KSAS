@@ -194,7 +194,7 @@ export function FarmMap({
   fitToken,
   fitPadding = FIELD_MAP_FIT_PADDING,
 }: FarmMapProps) {
-  const { maps, error } = useGoogleMaps()
+  const { maps, error, offline } = useGoogleMaps()
 
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<google.maps.Map | null>(null)
@@ -207,6 +207,20 @@ export function FarmMap({
   selectedFarmIdRef.current = selectedFarmId
 
   const interactive = onSelectFarm !== undefined
+
+  /**
+   * Without imagery there is nothing worth drawing, outlines and labels
+   * included — they would otherwise hang in an empty rectangle next to the
+   * message explaining that the map is missing.
+   *
+   * Hiding the container is what takes them away. Covering the map does not
+   * work: Google draws into panes of its own that carry high z-indexes, so the
+   * labels paint straight over a sibling overlay. Nor is tearing the map down
+   * an option — the API has no teardown, and rebuilding on a fresh container
+   * leaves its internals observing the discarded one. `visibility` keeps the
+   * map alive at its current size, so reconnecting just reveals it.
+   */
+  const unavailable = offline || error !== null
 
   useEffect(() => {
     const container = containerRef.current
@@ -285,8 +299,11 @@ export function FarmMap({
 
   return (
     <div className="absolute inset-0 bg-[#1c1c1c]">
-      <div ref={containerRef} className="size-full" />
-      {error && (
+      <div
+        ref={containerRef}
+        className={unavailable ? 'invisible size-full' : 'size-full'}
+      />
+      {unavailable && (
         <div
           className="absolute inset-0 flex items-center justify-center py-[80px]"
           // Stay inside the strip of map the card and the tool rail leave free.
@@ -297,10 +314,12 @@ export function FarmMap({
         >
           <div className="max-w-[720px] rounded-[28px] border border-[#333] bg-[#1c1c1c] p-[38px] text-center">
             <p className="text-[32px] font-semibold text-[#f2f5f7]">
-              Satellite map unavailable
+              {offline ? 'No internet connection' : 'Satellite map unavailable'}
             </p>
             <p className="mt-[16px] text-[24px] leading-relaxed break-words text-[#99a1ab]">
-              {error}
+              {offline
+                ? 'This machine is not reaching the internet, so satellite imagery cannot load.'
+                : error}
             </p>
           </div>
         </div>

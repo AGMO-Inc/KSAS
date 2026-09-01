@@ -94,19 +94,45 @@ export function loadGoogleMaps(apiKey: string): Promise<typeof google.maps> {
   return pending
 }
 
-export type GoogleMapsState = {
+type LoadState = {
   maps: typeof google.maps | null
   error: string | null
 }
 
-/** Loads the Maps API from `VITE_GOOGLE_MAPS_API_KEY`. */
+export type GoogleMapsState = LoadState & {
+  /** The machine reports no network, so no map data can load or refresh. */
+  offline: boolean
+}
+
+/**
+ * Loads the Maps API from `VITE_GOOGLE_MAPS_API_KEY`.
+ *
+ * The connection is watched alongside the load. A machine that boots offline
+ * says so at once instead of sitting out the load timeout first, and one that
+ * loses its uplink mid-session is reported too — `google.maps` keeps working
+ * there, but the tiles behind it stop arriving. Coming back online retries.
+ */
 export function useGoogleMaps(): GoogleMapsState {
-  const [state, setState] = useState<GoogleMapsState>({
+  const [offline, setOffline] = useState(() => !navigator.onLine)
+  const [state, setState] = useState<LoadState>({
     maps: globals.google?.maps ?? null,
     error: null,
   })
 
   useEffect(() => {
+    const sync = () => setOffline(!navigator.onLine)
+    window.addEventListener('online', sync)
+    window.addEventListener('offline', sync)
+    return () => {
+      window.removeEventListener('online', sync)
+      window.removeEventListener('offline', sync)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Nothing to attempt without a network; the effect re-runs once it is back.
+    if (offline) return
+
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
     if (!apiKey) {
@@ -135,7 +161,7 @@ export function useGoogleMaps(): GoogleMapsState {
     return () => {
       active = false
     }
-  }, [])
+  }, [offline])
 
-  return state
+  return { ...state, offline }
 }
